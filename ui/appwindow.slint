@@ -1,0 +1,94 @@
+import { ListView, Button, GridBox, ScrollView, StandardListView, HorizontalBox } from "std-widgets.slint";
+
+export struct NewBox {
+    visible: bool,
+    day: int,
+}
+
+export struct Weekdays {
+    day: string
+}
+
+
+export component CalendarDay inherits GridBox {
+    in property <int> day: 0;
+    Rectangle {
+        Text {
+            text: day;
+        }
+
+        padding: 10px;
+        width: 64px;
+        height: 64px;
+        background: darksalmon;
+    }
+}
+
+export component WeekDay inherits GridBox {
+    in property <string> day: "";
+    Rectangle {
+        Text {
+            text: day;
+        }
+
+        padding: 10px;
+        width: 64px;
+        height: 20px;
+    }
+}
+
+export component AppWindow inherits Window {
+    in property <[NewBox]> boxes: [];
+    in property <string> month;
+    in property <string> year;
+    callback next-month();
+    in property <[Weekdays]> weekdays: [];
+
+    min-width: 660px;
+    min-height: 556px;
+    background: gainsboro;
+
+    HorizontalLayout {
+        y: 20px;
+        x: 210px;
+        Rectangle {
+            height: 20px;
+            width: 220px;
+            Text {
+                text: month + year;
+                horizontal-alignment: center;
+                color: black;
+                font-size: 20px;
+            }
+        }
+
+        Rectangle {
+            height: 20px;
+            width: 90px;
+            Button {
+                text: "next";
+                clicked => {
+                    root.next-month();
+                }
+            }
+        }
+    }
+
+    Rectangle {
+        y: 90px;
+        for weekday[i] in weekdays: WeekDay {
+            x: mod(i, 7) * 94.285714286px;
+            y: floor(i / 7) * 74px;
+            day: weekday.day;
+        }
+    }
+
+    Rectangle {
+        y: 130px;
+        for box[i] in boxes: CalendarDay {
+            x: mod(i, 7) * 94.285714286px;
+            y: floor(i / 7) * 74px;
+            day: box.day;
+        }
+    }
+}
